@@ -1,9 +1,4 @@
-cmake_minimum_required(VERSION 3.1...3.18)
-
-# Fallback for using newer policies on CMake <3.12.
-if(${CMAKE_VERSION} VERSION_LESS 3.12)
-  cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
-endif()
+cmake_minimum_required(VERSION 3.15...3.18)
 
 # Determine if fmt is built as a subproject (using add_subdirectory)
 # or if it is the master project.
@@ -64,6 +59,10 @@ if (FMT_MASTER_PROJECT AND NOT CMAKE_BUILD_TYPE)
 endif ()
 
 project(FMT CXX)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 include(GNUInstallDirs)
 set_verbose(FMT_INC_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE STRING
             "Installation directory for include files, a relative path that "
@@ -127,7 +126,8 @@ list(FIND CMAKE_CXX_COMPILE_FEATURES "cxx_variadic_templates" index)
 if (${index} GREATER -1)
   # Use cxx_variadic_templates instead of more appropriate cxx_std_11 for
   # compatibility with older CMake versions.
-  set(FMT_REQUIRED_FEATURES cxx_variadic_templates)
+  #set(FMT_REQUIRED_FEATURES cxx_variadic_templates)
+  set(FMT_REQUIRED_FEATURES cxx_std_14)
 endif ()
 message(STATUS "Required features: ${FMT_REQUIRED_FEATURES}")
 
@@ -272,6 +272,8 @@ set_target_properties(fmt PROPERTIES
   VERSION ${FMT_VERSION} SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR}
   DEBUG_POSTFIX "${FMT_DEBUG_POSTFIX}")
 
+set_target_properties(fmt PROPERTIES CXX_STANDARD 14)
+
 # Set FMT_LIB_NAME for pkg-config fmt.pc. We cannot use the OUTPUT_NAME target
 # property because it's not set by default.
 set(FMT_LIB_NAME fmt)
@@ -294,6 +296,7 @@ endif()
 
 add_library(fmt-header-only INTERFACE)
 add_library(fmt::fmt-header-only ALIAS fmt-header-only)
+#set_target_properties(fmt-header-only PROPERTIES CXX_STANDARD 14)
 
 target_compile_definitions(fmt-header-only INTERFACE FMT_HEADER_ONLY=1)
 target_compile_features(fmt-header-only INTERFACE ${FMT_REQUIRED_FEATURES})

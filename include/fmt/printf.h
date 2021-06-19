@@ -83,13 +83,13 @@ class printf_precision_handler {
   template <typename T, FMT_ENABLE_IF(std::is_integral<T>::value)>
   int operator()(T value) {
     if (!int_checker<std::numeric_limits<T>::is_signed>::fits_in_int(value))
-      FMT_THROW(format_error("number is too big"));
+      FMT_THROW(format_error, "number is too big");
     return (std::max)(static_cast<int>(value), 0);
   }
 
   template <typename T, FMT_ENABLE_IF(!std::is_integral<T>::value)>
   int operator()(T) {
-    FMT_THROW(format_error("precision is not integer"));
+    FMT_THROW(format_error, "precision is not integer");
     return 0;
   }
 };
@@ -211,13 +211,13 @@ template <typename Char> class printf_width_handler {
       width = 0 - width;
     }
     unsigned int_max = max_value<int>();
-    if (width > int_max) FMT_THROW(format_error("number is too big"));
+    if (width > int_max) FMT_THROW(format_error, "number is too big");
     return static_cast<unsigned>(width);
   }
 
   template <typename T, FMT_ENABLE_IF(!std::is_integral<T>::value)>
   unsigned operator()(T) {
-    FMT_THROW(format_error("width is not integer"));
+    FMT_THROW(format_error, "width is not integer");
     return 0;
   }
 };
@@ -344,7 +344,7 @@ int parse_header(const Char*& it, const Char* end,
       if (value != 0) {
         // Nonzero value means that we parsed width and don't need to
         // parse it or flags again, so return now.
-        if (value == -1) FMT_THROW(format_error("number is too big"));
+        if (value == -1) FMT_THROW(format_error, "number is too big");
         specs.width = value;
         return arg_index;
       }
@@ -355,7 +355,7 @@ int parse_header(const Char*& it, const Char* end,
   if (it != end) {
     if (*it >= '0' && *it <= '9') {
       specs.width = parse_nonnegative_int(it, end, -1);
-      if (specs.width == -1) FMT_THROW(format_error("number is too big"));
+      if (specs.width == -1) FMT_THROW(format_error, "number is too big");
     } else if (*it == '*') {
       ++it;
       specs.width = static_cast<int>(visit_format_arg(
@@ -490,7 +490,7 @@ void vprintf(buffer<Char>& buf, basic_string_view<Char> format,
     }
 
     // Parse type.
-    if (it == end) FMT_THROW(format_error("invalid format string"));
+    if (it == end) FMT_THROW(format_error, "invalid format string");
     specs.type = static_cast<char>(*it++);
     if (arg.is_integral()) {
       // Normalize type.

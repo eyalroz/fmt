@@ -240,6 +240,7 @@ if (FMT_CUDA_TEST)
 
   if (CUDA_FOUND)
     add_subdirectory(cuda-test)
-    add_test(NAME cuda-test COMMAND fmt-in-cuda-test)
+    add_test(NAME cuda-host-side-test COMMAND fmt-in-cuda-test)
+    add_test(NAME cuda-device-side-test COMMAND fmt-in-cuda-kernel-test)
   endif ()
 endif ()

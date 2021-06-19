@@ -139,7 +139,7 @@ template <typename Char> struct formatter<std::error_code, Char> {
 };
 
 #ifdef _WIN32
-FMT_API const std::error_category& system_category() FMT_NOEXCEPT;
+FMT_HOST_API const std::error_category& system_category() FMT_NOEXCEPT;
 
 FMT_BEGIN_DETAIL_NAMESPACE
 // A converter from UTF-16 to UTF-8.
@@ -150,7 +150,7 @@ class utf16_to_utf8 {
 
  public:
   utf16_to_utf8() {}
-  FMT_API explicit utf16_to_utf8(basic_string_view<wchar_t> s);
+  FMT_HOST_API explicit utf16_to_utf8(basic_string_view<wchar_t> s);
   operator string_view() const { return string_view(&buffer_[0], size()); }
   size_t size() const { return buffer_.size() - 1; }
   const char* c_str() const { return &buffer_[0]; }
@@ -159,14 +159,14 @@ class utf16_to_utf8 {
   // Performs conversion returning a system error code instead of
   // throwing exception on conversion error. This method may still throw
   // in case of memory allocation error.
-  FMT_API int convert(basic_string_view<wchar_t> s);
+  FMT_HOST_API int convert(basic_string_view<wchar_t> s);
 };
 
-FMT_API void format_windows_error(buffer<char>& out, int error_code,
+FMT_HOST_API void format_windows_error(buffer<char>& out, int error_code,
                                   const char* message) FMT_NOEXCEPT;
 FMT_END_DETAIL_NAMESPACE
 
-FMT_API std::system_error vwindows_error(int error_code, string_view format_str,
+FMT_HOST_API std::system_error vwindows_error(int error_code, string_view format_str,
                                          format_args args);
 
 /**
@@ -238,7 +238,7 @@ class buffered_file {
   buffered_file() FMT_NOEXCEPT : file_(nullptr) {}
 
   // Destroys the object closing the file it represents if any.
-  FMT_API ~buffered_file() FMT_NOEXCEPT;
+  FMT_HOST_API ~buffered_file() FMT_NOEXCEPT;
 
  public:
   buffered_file(buffered_file&& other) FMT_NOEXCEPT : file_(other.file_) {
@@ -253,17 +253,17 @@ class buffered_file {
   }
 
   // Opens a file.
-  FMT_API buffered_file(cstring_view filename, cstring_view mode);
+  FMT_HOST_API buffered_file(cstring_view filename, cstring_view mode);
 
   // Closes the file.
-  FMT_API void close();
+  FMT_HOST_API void close();
 
   // Returns the pointer to a FILE object representing this file.
   FILE* get() const FMT_NOEXCEPT { return file_; }
 
   // We place parentheses around fileno to workaround a bug in some versions
   // of MinGW that define fileno as a macro.
-  FMT_API int(fileno)() const;
+  FMT_HOST_API int(fileno)() const;
 
   void vprint(string_view format_str, format_args args) {
     fmt::vprint(file_, format_str, args);
@@ -461,7 +461,7 @@ class FMT_API ostream final : private detail::buffer<char> {
   \endrst
  */
 template <typename... T>
-inline ostream output_file(cstring_view path, T... params) {
+FMT_HOST inline ostream output_file(cstring_view path, T... params) {
   return {path, detail::ostream_params(params...)};
 }
 #endif  // FMT_USE_FCNTL
@@ -493,7 +493,7 @@ class locale {
 #  else
     locale_ = _create_locale(LC_NUMERIC, "C");
 #  endif
-    if (!locale_) FMT_THROW(system_error(errno, "cannot create locale"));
+    if (!locale_) FMT_THROW_HOST(system_error, errno, "cannot create locale");
   }
   ~locale() { freelocale(locale_); }
 
