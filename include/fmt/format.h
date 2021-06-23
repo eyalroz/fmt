@@ -1,7 +1,8 @@
 /*
- Formatting library for C++
+ {fmt} - Formatting library for C++ - form with CUDA device-side support
 
- Copyright (c) 2012 - present, Victor Zverovich
+ Copyright (c) 2021 - present, Eyal Rozenberg - fork maintainer
+ Copyright (c) 2012 - present, Victor Zverovich - original {fmt} author
 
  Permission is hereby granted, free of charge, to any person obtaining
  a copy of this software and associated documentation files (the

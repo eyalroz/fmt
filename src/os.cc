@@ -1,5 +1,6 @@
 // Formatting library for C++ - optional OS-specific functionality
 //
+// Copyright (c) 2021 - present, Eyal Rozenberg
 // Copyright (c) 2012 - 2016, Victor Zverovich
 // All rights reserved.
 //

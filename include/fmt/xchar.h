@@ -1,5 +1,6 @@
 // Formatting library for C++ - optional wchar_t and exotic character support
 //
+// Copyright (c) 2021 - present, Eyal Rozenberg
 // Copyright (c) 2012 - present, Victor Zverovich
 // All rights reserved.
 //
